@@ -64,7 +64,6 @@ export const siteConfig = {
           title: "Espresso",
           href: "/products/category/espresso",
           description: "Espresso for your coffee.",
-          items: [],
         },
       ],
     },

@@ -1,15 +1,34 @@
 import * as React from "react";
 import MainNav from "./MainNav";
 import MobileNav from "./MobileNav";
+import CartSheet from "../checkout/CartSheet";
+import { Skeleton } from "../ui/skeleton";
+import dynamic from "next/dynamic";
+
+const ThemeToggle = dynamic(() => import("../ThemeToggle"), {
+  loading: () => <Skeleton className="w-10 h-10" />,
+  ssr: false,
+});
+const Auth = dynamic(() => import("../Auth"), {
+  loading: () => <Skeleton className="w-10 h-10" />,
+  ssr: false,
+});
 
 interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = ({}) => {
   return (
     <header className="z-50 text-stone-400">
-      <div className="container flex h-16 items-center">
+      <div className="container flex h-16 items-center justify-between">
         <MainNav />
         <MobileNav />
+        <div className="flex flex-1 items-center justify-end space-x-4">
+          <nav className="flex items-center space-x-2">
+            <ThemeToggle />
+            <CartSheet />
+            <Auth />
+          </nav>
+        </div>
       </div>
     </header>
   );

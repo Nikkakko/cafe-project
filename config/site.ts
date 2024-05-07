@@ -4,6 +4,8 @@ const links = {
   xing: "https://twitter.com/nikako_00",
 };
 
+import { SubImage, CoffeImage, EquipmentImage } from "@/public/images";
+
 export const siteConfig = {
   name: "Coffe Shop",
   description: "The best coffee in town!",
@@ -66,4 +68,25 @@ export const siteConfig = {
     },
   ],
   footernav: [],
+
+  categories: [
+    {
+      title: "Subscriptions",
+      href: "/products/category/subscriptions",
+      label: "Shop now",
+      image: SubImage,
+    },
+    {
+      title: "Equipment",
+      href: "/products/category/equipment",
+      label: "Shop now",
+      image: EquipmentImage,
+    },
+    {
+      title: "Coffe",
+      href: "/products/category/coffe",
+      label: "Shop now",
+      image: CoffeImage,
+    },
+  ],
 };

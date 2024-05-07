@@ -9,19 +9,26 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { ScrollArea } from "../ui/scroll-area";
+import { useRouter } from "next/navigation";
 
 const MobileNav: React.FC<MobileNavProps> = ({}) => {
   const [open, setOpen] = React.useState(false);
-  const isTablet = useMediaQuery("(min-width: 768px)");
+  const router = useRouter();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
-  if (isTablet) return null;
+  const handleNavigate = (href: string) => {
+    setOpen(false);
+    router.push(href);
+  };
+
+  if (isDesktop) return null;
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
           size="icon"
-          className="size-5 hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+          className="size-5 hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
         >
           <Icons.menu aria-hidden="true" />
           <span className="sr-only">Toggle Menu</span>
@@ -42,11 +49,10 @@ const MobileNav: React.FC<MobileNavProps> = ({}) => {
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="pl-1 pr-7">
             {siteConfig.mainNav.map(item => (
-              <Link
+              <div
                 key={item.title}
-                href={item.href}
                 className="block py-1 hover:bg-stone-100"
-                onClick={() => setOpen(false)}
+                onClick={() => handleNavigate(item.href)}
               >
                 {item.items && item.items?.length > 0 ? (
                   <>
@@ -65,7 +71,7 @@ const MobileNav: React.FC<MobileNavProps> = ({}) => {
                 ) : (
                   <span className="text-stone-200">{item.title}</span>
                 )}
-              </Link>
+              </div>
             ))}
           </div>
         </ScrollArea>

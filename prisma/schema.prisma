@@ -23,6 +23,23 @@ enum Category {
   COFFE
 }
 
+enum UserRoles {
+  ADMIN
+  USER
+}
+
+
+
+enum SubCategories {
+  FILTER_PAPERS
+  BREWING_DEVICES
+  ACCESSORIES
+  GRINDERS
+  BEANS
+  FILTER_COFFEE
+  ESPRESSO
+}
+
 
 
 
@@ -32,18 +49,28 @@ model Products {
   userId    String
   title      String
   description String
-  images    String[]
+  images   Images[]
 
   price     Float
   quantity  Int
 
   category  Category @default(COFFE)
-  subCategory String
+  subCategory SubCategories @default(FILTER_PAPERS)
 
   cartItem CartItem[]
   review   Review[]
   
   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Images {
+  id        String   @id @default(uuid())
+  productId String
+  imageUrl  String
+  index     Int
+  product   Products @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

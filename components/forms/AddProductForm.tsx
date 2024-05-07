@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -24,6 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { Textarea } from "../ui/textarea";
+import { UploadButton } from "@/utils/uploadthing";
+import { useToast } from "../ui/use-toast";
 
 interface AddProductFormProps {}
 
@@ -52,6 +54,11 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
     },
   });
 
+  const { toast } = useToast();
+  const [images, setImages] = React.useState<
+    { fileUrl: string; fileKey: string }[] | null
+  >(null);
+
   function onSubmit(values: AddProductInput) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
@@ -73,6 +80,9 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
     { value: "FILTER_COFFEE", label: "Filter Coffee" },
     { value: "ESPRESSO", label: "Espresso" },
   ];
+
+  //make 5 input for images
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -160,14 +170,12 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
                 <FormLabel>Price</FormLabel>
                 <FormControl>
                   <Input
+                    placeholder="Product Price"
                     type="number"
-                    inputMode="numeric"
-                    min={0}
-                    className=""
                     {...field}
                     onChange={e => {
                       const value = e.target.value;
-                      const parsedValue = parseInt(value, 10);
+                      const parsedValue = parseFloat(value);
                       if (isNaN(parsedValue)) return;
                       field.onChange(parsedValue);
                     }}
@@ -211,7 +219,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Product Description"
+                  placeholder="Description"
                   {...field}
                   className="resize-none"
                 />
@@ -221,20 +229,43 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
           )}
         />
 
+        {/* Add images input here */}
         <FormField
-          control={form.control}
           name="images"
+          control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Images</FormLabel>
               <FormControl>
-                <Input
-                  type="url"
-                  placeholder="Image URL"
-                  {...field}
-                  onChange={e => {
-                    const value = e.target.value;
-                    field.onChange([...field.value, value]);
+                <UploadButton
+                  endpoint="imageUploader"
+                  className=""
+                  onClientUploadComplete={res => {
+                    //copy old and add new image\
+
+                    const newImages = res.map(image => ({
+                      fileUrl: image.url,
+                      fileKey: image.key,
+                    }));
+
+                    setImages([...(images || []), ...newImages]);
+
+                    //update form value with new images
+                    field.onChange([
+                      ...(field.value || []),
+                      ...newImages.map(image => image.fileUrl),
+                    ]);
+
+                    toast({
+                      title: "Upload Completed",
+                      description: "Your image has been uploaded",
+                    });
+                  }}
+                  onUploadError={(error: Error) => {
+                    // Do something with the error.
+                    toast({
+                      title: "Upload Error",
+                      description: error.message,
+                    });
                   }}
                 />
               </FormControl>
@@ -242,6 +273,12 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
             </FormItem>
           )}
         />
+
+        <div className="flex gap-4">
+          <Button variant={"outline"} className="w-full">
+            Submit
+          </Button>
+        </div>
       </form>
     </Form>
   );

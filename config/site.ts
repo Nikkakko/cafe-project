@@ -2,6 +2,7 @@ const links = {
   github: "https://github.com/Nikkakko",
   linkedin: "https://www.linkedin.com/in/nika-kopadze/",
   xing: "https://twitter.com/nikako_00",
+  nextjs: "https://nextjs.org",
 };
 
 import { SubImage, CoffeImage, EquipmentImage } from "@/public/images";
@@ -10,10 +11,11 @@ export const siteConfig = {
   name: "Coffe Shop",
   description: "The best coffee in town!",
   url: "https://coffeeshop.com",
+  links,
 
   mainNav: [
     {
-      title: "All Categories",
+      title: "All Products",
       href: "/products",
     },
 

@@ -17,6 +17,7 @@ import {
 interface MainNavProps {}
 
 const MainNav: React.FC<MainNavProps> = ({}) => {
+
   return (
     <div className="hidden lg:flex gap-6">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
@@ -49,11 +50,12 @@ const MainNav: React.FC<MainNavProps> = ({}) => {
                       {item.items?.map((subItem, index) => (
                         <li
                           key={index}
-                          className="hover:bg-stone-100 p-2 rounded-md hover:text-black/50 transition"
+                          className="hover:bg-stone-100 p-2 rounded-md hover:text-muted transition text-foreground"
                         >
                           <Link href={subItem.href}>{subItem.title}</Link>
                         </li>
                       ))}
+                      
                     </ul>
                   </NavigationMenuContent>
                 )}

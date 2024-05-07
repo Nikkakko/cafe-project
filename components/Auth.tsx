@@ -7,7 +7,7 @@ interface AuthProps {}
 
 const Auth: React.FC<AuthProps> = ({}) => {
   return (
-    <div className="w-10 h-10 flex items-center justify-center">
+    <>
       <SignedOut>
         <Button asChild className="" variant="outline">
           <SignInButton
@@ -21,7 +21,7 @@ const Auth: React.FC<AuthProps> = ({}) => {
           <UserButton afterSignOutUrl="/" />
         </Button>
       </SignedIn>
-    </div>
+    </>
   );
 };
 

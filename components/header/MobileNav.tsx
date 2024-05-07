@@ -10,9 +10,12 @@ import { siteConfig } from "@/config/site";
 import Link from "next/link";
 import { ScrollArea } from "../ui/scroll-area";
 import { useRouter } from "next/navigation";
+import DashboardButton from "./DashboardButton";
+import { useAuth } from "@clerk/nextjs";
 
 const MobileNav: React.FC<MobileNavProps> = ({}) => {
   const [open, setOpen] = React.useState(false);
+  const { isLoaded, userId, sessionId, getToken } = useAuth();
   const router = useRouter();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -46,8 +49,12 @@ const MobileNav: React.FC<MobileNavProps> = ({}) => {
             <span className="sr-only">Home</span>
           </Link>
         </div>
+
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="pl-1 pr-7">
+            {userId && (
+              <DashboardButton asLink onClick={() => setOpen(false)} />
+            )}
             {siteConfig.mainNav.map(item => (
               <div
                 key={item.title}

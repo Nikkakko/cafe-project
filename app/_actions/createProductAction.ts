@@ -41,4 +41,6 @@ export const createProductAction = action(AddProductSchema, async values => {
       error: "Invalid form values.",
     };
   }
+
+  //only admin can create product
 });

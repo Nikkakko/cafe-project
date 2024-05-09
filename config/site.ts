@@ -1,9 +1,80 @@
+import {
+  Home,
+  LineChart,
+  Package,
+  Package2,
+  Settings,
+  ShoppingCart,
+  Users2,
+  
+} from "lucide-react";
+
 const links = {
   github: "https://github.com/Nikkakko",
   linkedin: "https://www.linkedin.com/in/nika-kopadze/",
   xing: "https://twitter.com/nikako_00",
   nextjs: "https://nextjs.org",
 };
+
+const dashboardLinks = [
+  {
+    href: "/admin/dashboard",
+    icon: Home,
+    title: "Dashboard",
+  },
+
+  {
+    href: "/admin/dashboard/orders",
+    icon: ShoppingCart,
+    title: "Orders",
+  },
+
+  {
+    href: "/admin/dashboard/products",
+    icon: Package,
+    title: "Products",
+  },
+
+  {
+    href: "/admin/dashboard/users",
+    icon: Users2,
+    title: "Users",
+  },
+
+  {
+    href: "/admin/dashboard/analytics",
+    icon: LineChart,
+    title: "Analytics",
+  },
+];
+const dashboardPageLinks = [
+  {
+    title: "Dashboard",
+    href: "/admin/dashboard",
+    icon: Home,
+  },
+
+  {
+    title: "Orders",
+    href: "/admin/dashboard/orders",
+    icon: ShoppingCart,
+  },
+  {
+    title: "Products",
+    href: "/admin/dashboard/products",
+    icon: Package,
+  },
+  {
+    title: "Users",
+    href: "/admin/dashboard/users",
+    icon: Users2,
+  },
+  {
+    title: "Settings",
+    href: "/admin/dashboard/settings",
+    icon: LineChart,
+  },
+];
 
 import { SubImage, CoffeImage, EquipmentImage } from "@/public/images";
 
@@ -12,6 +83,8 @@ export const siteConfig = {
   description: "The best coffee in town!",
   url: "https://coffeeshop.com",
   links,
+  dashboardLinks,
+  dashboardPageLinks,
 
   mainNav: [
     {

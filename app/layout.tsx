@@ -6,6 +6,7 @@ import Footer from "@/components/footer/Footer";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,9 +34,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Header />
-            {children}
-            <Footer />
+            <TooltipProvider>
+              <Header />
+              {children}
+              <Footer />
+            </TooltipProvider>
           </ThemeProvider>
         </body>
       </html>

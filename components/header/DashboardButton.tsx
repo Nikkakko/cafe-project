@@ -13,7 +13,7 @@ const DashboardButton: React.FC<DashboardButtonProps> = ({
 }) => {
   return (
     <Link
-      href="/dashboard"
+      href="/admin/dashboard"
       className={cn(
         !asLink &&
           buttonVariants({

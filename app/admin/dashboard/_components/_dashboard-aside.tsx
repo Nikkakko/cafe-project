@@ -24,7 +24,7 @@ const DashboardAside: React.FC<DashboardAsideProps> = () => {
           const isActive = pathname === link.href;
           return (
             <Tooltip key={link.title}>
-              <TooltipTrigger asChild>
+              <TooltipTrigger asChild className="">
                 <Link
                   href={link.href}
                   className={cn(

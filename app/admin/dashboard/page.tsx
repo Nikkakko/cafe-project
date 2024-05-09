@@ -11,18 +11,10 @@ import UserList from "./_components/_user-list";
 import DashboardAside from "./_components/_dashboard-aside";
 import DashboardHeader from "./_components/_dashboard-header";
 
-export default async function AdminDashboard(params: {
-  searchParams: { search?: string };
-}) {
+export default async function AdminDashboard() {
   if (!checkRole("admin")) {
     redirect("/");
   }
-
-  const query = params.searchParams.search;
-
-  const users = await clerkClient.users.getUserList({
-    query: query ? query : undefined,
-  });
 
   return (
     <Shell className="flex flex-col flex-1 w-full " as="main">

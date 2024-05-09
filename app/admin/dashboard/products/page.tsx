@@ -1,14 +1,26 @@
-import AddProductForm from "@/components/forms/AddProductForm";
-import { Shell } from "@/components/ui/shell";
 import * as React from "react";
+import ProductsTable from "@/components/ProductsTable";
+import AddProductForm from "@/components/forms/AddProductForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DashboardProductsPageProps {}
 
 const DashboardProductsPage: React.FC<DashboardProductsPageProps> = ({}) => {
   return (
-    <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 w-full">
-      <AddProductForm />
-    </div>
+    <main className="flex flex-col w-full">
+      <Tabs defaultValue="product" className="w-full">
+        <TabsList>
+          <TabsTrigger value="product">Add Product</TabsTrigger>
+          <TabsTrigger value="table">Products</TabsTrigger>
+        </TabsList>
+        <TabsContent value="product" className="w-1/2">
+          <AddProductForm />
+        </TabsContent>
+        <TabsContent value="table" className="">
+          <ProductsTable />
+        </TabsContent>
+      </Tabs>
+    </main>
   );
 };
 

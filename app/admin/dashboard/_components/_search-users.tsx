@@ -74,7 +74,7 @@ export const SearchUsers = () => {
                 <FormLabel>Search for users</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Search"
+                    placeholder="Search for users"
                     {...field}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
@@ -84,7 +84,6 @@ export const SearchUsers = () => {
               </FormItem>
             )}
           />
-          <Button variant="outline">Submit</Button>
         </form>
       </Form>
     </div>

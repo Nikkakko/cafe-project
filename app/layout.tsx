@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import ModalProvider from "@/components/providers/ModalsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <TooltipProvider>
+              <ModalProvider />
               <Header />
               {children}
               <Footer />

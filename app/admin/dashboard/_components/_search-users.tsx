@@ -76,6 +76,7 @@ export const SearchUsers = () => {
                   <Input
                     placeholder="Search for users"
                     {...field}
+                    autoComplete="off"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                   />

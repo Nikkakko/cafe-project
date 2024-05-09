@@ -1,9 +1,9 @@
+"use client";
 import { User } from "@clerk/nextjs/server";
 import * as React from "react";
-import { setRole } from "@/app/_actions/setRoleAction";
 
 interface UserListProps {
-  usersData: User[];
+  data: User[] | null;
 }
 
 import {
@@ -16,37 +16,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import FormAction from "./_form-action-dialog";
+import { useModalStore } from "@/store/modalStore";
+import { Button } from "@/components/ui/button";
 
-const UserList: React.FC<UserListProps> = ({ usersData }) => {
+const UserList: React.FC<UserListProps> = ({ data }) => {
+  const userData = data;
+  const { onOpen } = useModalStore();
+
   return (
-    // <div key={user.id}>
-    //   <div>
-    //     {user.firstName} {user.lastName}
-    //   </div>
-    //   <div>
-    //     {
-    //       user.emailAddresses.find(
-    //         email => email.id === user.primaryEmailAddressId
-    //       )?.emailAddress
-    //     }
-    //   </div>
-    //   <div>{user.publicMetadata.role as string}</div>
-    //   <div>
-    //     <form action={setRole}>
-    //       <input type="hidden" value={user.id} name="id" />
-    //       <input type="hidden" value="admin" name="role" />
-    //       <button type="submit">Make Admin</button>
-    //     </form>
-    //   </div>
-    //   <div>
-    //     <form action={setRole}>
-    //       <input type="hidden" value={user.id} name="id" />
-    //       <input type="hidden" value="moderator" name="role" />
-    //       <button type="submit">Make Moderator</button>
-    //     </form>
-    //   </div>
-    // </div>
-
     <Table>
       <TableCaption>A list of users</TableCaption>
       <TableHeader>
@@ -54,25 +32,47 @@ const UserList: React.FC<UserListProps> = ({ usersData }) => {
           <TableHead className="w-[150px]">First Name</TableHead>
           <TableHead>Last Name</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead className="text-right">Role</TableHead>
+          <TableHead>Role</TableHead>
+          <TableHead className="text-right">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {usersData.map(user => (
+        {userData?.map((user: User) => (
           <TableRow key={user.id}>
             <TableCell>{user.firstName}</TableCell>
             <TableCell>{user.lastName}</TableCell>
             <TableCell>{user.emailAddresses[0].emailAddress}</TableCell>
+            <TableCell>{user.publicMetadata.role as string}</TableCell>
             <TableCell className="text-right">
-              {user.publicMetadata.role as string}
+              {user.publicMetadata.role === "admin" ? (
+                <Button
+                  onClick={() =>
+                    onOpen("form-action", { role: "moderator", id: user.id })
+                  }
+                  variant="outline"
+                  size="sm"
+                >
+                  Change to Moderator
+                </Button>
+              ) : (
+                <Button
+                  onClick={() =>
+                    onOpen("form-action", { role: "admin", id: user.id })
+                  }
+                  variant="outline"
+                  size="sm"
+                >
+                  Change to Admin
+                </Button>
+              )}
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
-      <TableFooter>
+      <TableFooter className="">
         <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">{usersData.length}</TableCell>
+          <TableCell colSpan={4}>Total</TableCell>
+          <TableCell className="text-right">{data?.length}</TableCell>
         </TableRow>
       </TableFooter>
     </Table>

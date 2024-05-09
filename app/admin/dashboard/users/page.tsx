@@ -2,6 +2,7 @@ import * as React from "react";
 import { SearchUsers } from "../_components/_search-users";
 import { clerkClient } from "@clerk/nextjs/server";
 import UserList from "../_components/_user-list";
+import { getUserList } from "@/lib/queries/user";
 
 interface AdminDashboardUsersPageProps {
   searchParams: { search?: string };
@@ -12,15 +13,18 @@ const AdminDashboardUsersPage: React.FC<
 > = async (params: { searchParams: { search?: string } }) => {
   const query = params.searchParams.search;
 
-  const users = await clerkClient.users.getUserList({
-    query: query ? query : undefined,
-  });
+  const users = await getUserList(query as string);
+
+  if (!users) {
+    return <div>loading...</div>;
+  }
+
   return (
-    <main className="flex flex-col flex-1 py-4">
+    <main className="flex flex-col flex-1 py-4 ">
       <SearchUsers />
       <div className="flex flex-col mt-6">
         {users?.data.length > 0 ? (
-          <UserList usersData={users.data} />
+          <UserList data={JSON.parse(JSON.stringify(users.data))} />
         ) : (
           <EmptyUserList />
         )}

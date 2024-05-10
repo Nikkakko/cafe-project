@@ -4,10 +4,8 @@ import "./globals.css";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/providers/Providers";
+import { Providers } from "@/components/providers/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import ModalProvider from "@/components/providers/ModalsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,19 +27,16 @@ export default function RootLayout({
         className="h-full antialiased scroll-smooth"
       >
         <body className={cn("flex flex-col h-full", inter.className)}>
-          <ThemeProvider
+          <Providers
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-            <TooltipProvider>
-              <ModalProvider />
-              <Header />
-              {children}
-              <Footer />
-            </TooltipProvider>
-          </ThemeProvider>
+            <Header />
+            {children}
+            <Footer />
+          </Providers>
         </body>
       </html>
     </ClerkProvider>

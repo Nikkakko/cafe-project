@@ -1,11 +1,6 @@
 import { Category, SubCategories } from "@prisma/client";
 import { z } from "zod";
 
-export const ImagesSchema = z.object({
-  imageUrl: z.string().url(),
-  index: z.number(),
-});
-
 export const AddProductSchema = z.object({
   title: z
     .string()
@@ -13,20 +8,20 @@ export const AddProductSchema = z.object({
       message: "Title should be at least 3 characters long.",
     })
     .max(255),
-  description: z
-    .string()
-    .min(3, {
-      message: "Description should be at least 3 characters long.",
-    })
-    .max(255),
+  description: z.string().min(3, {
+    message: "Description should be at least 3 characters long.",
+  }),
+
   price: z.number().min(1.69, {
     message: "Price should be at least 1.69",
   }),
   category: z.nativeEnum(Category),
   subCategory: z.nativeEnum(SubCategories),
-  images: z.array(ImagesSchema).max(6, {
-    message: "You can only upload up to 6 images",
-  }),
+  images: z.array(
+    z.string().url({
+      message: "Invalid image URL",
+    })
+  ),
   quantity: z.number().min(1, {
     message: "Quantity should be at least 1",
   }),

@@ -26,6 +26,10 @@ import Link from "next/link";
 import { Textarea } from "../ui/textarea";
 import { UploadButton } from "@/utils/uploadthing";
 import { useToast } from "../ui/use-toast";
+import { createProductAction } from "@/app/_actions/productAction";
+import { getErrorMessage } from "@/lib/handle-error";
+import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 interface AddProductFormProps {}
 
@@ -41,6 +45,7 @@ type Subcategories = {
 };
 
 const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
+  const [isPending, startTransition] = React.useTransition();
   const form = useForm<AddProductInput>({
     resolver: zodResolver(AddProductSchema),
     defaultValues: {
@@ -60,9 +65,24 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
   >(null);
 
   function onSubmit(values: AddProductInput) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
+    startTransition(async () => {
+      try {
+        await createProductAction(values);
+        toast({
+          title: "Success",
+          description: `Product has been created`,
+        });
+
+        form.reset();
+        setImages(null);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: getErrorMessage(error),
+        });
+      }
+    });
   }
 
   const categories: Categories[] = [
@@ -82,6 +102,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
   ];
 
   //make 5 input for images
+  // console.log(form.watch());
 
   return (
     <Form {...form}>
@@ -252,7 +273,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
 
                     setImages([...(images || []), ...newImages]);
 
-                    //update form value with new images
+                    // update form value with new images
                     field.onChange([
                       ...(field.value || []),
                       ...newImages.map(image => image.fileUrl),
@@ -277,9 +298,28 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
           )}
         />
 
+        {images && (
+          <div className="flex gap-2">
+            {images.map((image, index) => (
+              <div
+                key={index}
+                className="relative w-24 h-24 rounded-md overflow-hidden"
+              >
+                <Image
+                  src={image.fileUrl}
+                  alt="Product Image"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="flex gap-4">
-          <Button variant={"outline"} className="w-full">
-            Submit
+          <Button variant={"outline"} className="w-full" disabled={isPending}>
+            {isPending && <Loader2 className="animate-spin mr-2" size={20} />}
+            Create Product
           </Button>
         </div>
       </form>

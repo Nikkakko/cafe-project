@@ -12,12 +12,12 @@ const DashboardProductsPage: React.FC<
   const products = await db.products.findMany();
   return (
     <main className="flex flex-col w-full py-4">
-      <Tabs defaultValue="product" className="w-full">
+      <Tabs defaultValue="product" className="w-full ">
         <TabsList>
           <TabsTrigger value="product">Add Product</TabsTrigger>
           <TabsTrigger value="table">Products</TabsTrigger>
         </TabsList>
-        <TabsContent value="product" className="w-1/2">
+        <TabsContent value="product" className="">
           <AddProductForm />
         </TabsContent>
         <TabsContent value="table" className="">

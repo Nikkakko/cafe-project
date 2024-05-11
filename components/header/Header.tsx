@@ -6,8 +6,7 @@ import { Skeleton } from "../ui/skeleton";
 import dynamic from "next/dynamic";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "../ui/button";
+
 import DashboardButton from "./DashboardButton";
 
 const ThemeToggle = dynamic(() => import("../ThemeToggle"), {

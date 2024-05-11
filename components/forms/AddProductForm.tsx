@@ -26,53 +26,69 @@ import Link from "next/link";
 import { Textarea } from "../ui/textarea";
 import { UploadButton } from "@/utils/uploadthing";
 import { useToast } from "../ui/use-toast";
-import { createProductAction } from "@/app/_actions/productAction";
+import {
+  createProductAction,
+  updateProductAction,
+} from "@/app/_actions/productAction";
 import { getErrorMessage } from "@/lib/handle-error";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useModalStore } from "@/store/modalStore";
+import { removeImage } from "@/app/_actions/uploadthing";
+import { siteConfig } from "@/config/site";
 
-interface AddProductFormProps {}
+interface AddProductFormProps {
+  initialData?: AddProductInput & { id: string };
+}
 
 type AddProductInput = z.infer<typeof AddProductSchema>;
-type Categories = {
-  value: AddProductInput["category"];
-  label: string;
-};
 
-type Subcategories = {
-  value: AddProductInput["subCategory"];
-  label: string;
-};
-
-const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
+const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
   const [isPending, startTransition] = React.useTransition();
+  const { onClose } = useModalStore();
   const form = useForm<AddProductInput>({
     resolver: zodResolver(AddProductSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      price: 0,
-      category: "COFFE",
-      subCategory: "BEANS",
-      images: [],
-      quantity: 1,
+      title: initialData?.title || "",
+      description: initialData?.description || "",
+      price: initialData?.price || 0,
+      category: initialData?.category || "COFFE",
+      subCategory: initialData?.subCategory || "BEANS",
+      images: initialData?.images || [],
+      quantity: initialData?.quantity || 1,
     },
   });
 
   const { toast } = useToast();
   const [images, setImages] = React.useState<
     { fileUrl: string; fileKey: string }[] | null
-  >(null);
+  >(
+    initialData?.images?.map(image => ({
+      fileUrl: image,
+      fileKey: "",
+    })) || null
+  );
+
+  const disabledButton =
+    form.formState.isSubmitting || isPending || !form.formState.isDirty;
 
   function onSubmit(values: AddProductInput) {
-    console.log(values);
     startTransition(async () => {
       try {
-        await createProductAction(values);
-        toast({
-          title: "Success",
-          description: `Product has been created`,
-        });
+        if (initialData) {
+          await updateProductAction({ id: initialData.id, product: values });
+          toast({
+            title: "Success",
+            description: `Product has been updated`,
+          });
+          onClose();
+        } else {
+          await createProductAction(values);
+          toast({
+            title: "Success",
+            description: `Product has been created`,
+          });
+        }
 
         form.reset();
         setImages(null);
@@ -85,24 +101,23 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
     });
   }
 
-  const categories: Categories[] = [
-    { value: "COFFE", label: "Coffee" },
-    { value: "EQUIPMENT", label: "Equipment" },
-    { value: "SUBSCRIPTIONS", label: "Subscriptions" },
-  ];
+  const handleDelete = (imageUrl: string, imageKey: string) => {
+    if (images && images.length > 0) {
+      startTransition(async () => {
+        await removeImage(imageKey);
+        setImages(images.filter(image => image.fileUrl !== imageUrl));
+      });
 
-  const subcategories: Subcategories[] = [
-    { value: "BEANS", label: "Beans" },
-    { value: "FILTER_PAPERS", label: "Filter Papers" },
-    { value: "ACCESSORIES", label: "Accessories" },
-    { value: "BREWING_DEVICES", label: "Brewing Devices" },
-    { value: "GRINDERS", label: "Grinders" },
-    { value: "FILTER_COFFEE", label: "Filter Coffee" },
-    { value: "ESPRESSO", label: "Espresso" },
-  ];
-
-  //make 5 input for images
-  // console.log(form.watch());
+      //update form value
+      form.setValue(
+        "images",
+        images
+          .filter(image => image.fileUrl !== imageUrl)
+          .map(image => image.fileUrl),
+        { shouldDirty: true }
+      );
+    }
+  };
 
   return (
     <Form {...form}>
@@ -140,7 +155,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {categories.map(category => (
+                    {siteConfig.productCategories.map(category => (
                       <SelectItem key={category.value} value={category.value}>
                         {category.label}
                       </SelectItem>
@@ -169,7 +184,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {subcategories.map(subcategory => (
+                    {siteConfig.productSubcategories.map(subcategory => (
                       <SelectItem
                         key={subcategory.value}
                         value={subcategory.value}
@@ -311,15 +326,27 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
                   fill
                   className="object-cover"
                 />
+
+                <button
+                  onClick={() => handleDelete(image.fileUrl, image.fileKey)}
+                  type="button"
+                  className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-md w-6 h-6 flex justify-center items-center hover:bg-red-600 transition"
+                >
+                  X
+                </button>
               </div>
             ))}
           </div>
         )}
 
         <div className="flex gap-4">
-          <Button variant={"outline"} className="w-full" disabled={isPending}>
+          <Button
+            variant={"outline"}
+            className="w-full"
+            disabled={disabledButton}
+          >
             {isPending && <Loader2 className="animate-spin mr-2" size={20} />}
-            Create Product
+            {initialData ? "Update Product" : "Add Product"}
           </Button>
         </div>
       </form>

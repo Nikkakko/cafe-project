@@ -6,8 +6,9 @@ import {
   Settings,
   ShoppingCart,
   Users2,
-  
 } from "lucide-react";
+import { SubImage, CoffeImage, EquipmentImage } from "@/public/images";
+import { Categories, Subcategories } from "@/types";
 
 const links = {
   github: "https://github.com/Nikkakko",
@@ -76,7 +77,21 @@ const dashboardPageLinks = [
   },
 ];
 
-import { SubImage, CoffeImage, EquipmentImage } from "@/public/images";
+const productCategories: Categories[] = [
+  { value: "COFFE", label: "Coffee" },
+  { value: "EQUIPMENT", label: "Equipment" },
+  { value: "SUBSCRIPTIONS", label: "Subscriptions" },
+];
+
+const productSubcategories: Subcategories[] = [
+  { value: "BEANS", label: "Beans" },
+  { value: "FILTER_PAPERS", label: "Filter Papers" },
+  { value: "ACCESSORIES", label: "Accessories" },
+  { value: "BREWING_DEVICES", label: "Brewing Devices" },
+  { value: "GRINDERS", label: "Grinders" },
+  { value: "FILTER_COFFEE", label: "Filter Coffee" },
+  { value: "ESPRESSO", label: "Espresso" },
+];
 
 export const siteConfig = {
   name: "Coffe Shop",
@@ -85,6 +100,8 @@ export const siteConfig = {
   links,
   dashboardLinks,
   dashboardPageLinks,
+  productCategories,
+  productSubcategories,
 
   mainNav: [
     {

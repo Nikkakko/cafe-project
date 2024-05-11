@@ -1,10 +1,12 @@
+import { Products } from "@prisma/client";
 import { create } from "zustand";
 
-type ModalType = "form-action";
+type ModalType = "form-action" | "product-edit" | "product-delete";
 
 interface ModalData {
   role: "admin" | "moderator";
   id: string;
+  product?: Products;
 }
 
 interface ModalStore {

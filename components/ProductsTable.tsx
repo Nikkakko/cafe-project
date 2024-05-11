@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import EmptyState from "./EmptyState";
+import { useModalStore } from "@/store/modalStore";
 
 interface ProductsTableProps {
   products: Products[];
@@ -41,8 +42,8 @@ type tableHeads =
   | "Action";
 
 const ProductsTable: React.FC<ProductsTableProps> = ({ products }) => {
-  const [isPending, startTransition] = React.useTransition();
-  const { toast } = useToast();
+  const { onOpen } = useModalStore();
+
   const tableHeads = [
     "Title",
     "Category",
@@ -51,23 +52,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({ products }) => {
     "Quantity",
     "Action",
   ] as tableHeads[];
-
-  function handleDelete(id: string) {
-    startTransition(async () => {
-      try {
-        await deleteProductAction(id);
-        toast({
-          title: "Product deleted successfully",
-          description: "Product has been deleted successfully",
-        });
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: getErrorMessage(error),
-        });
-      }
-    });
-  }
 
   if (!products.length)
     return (
@@ -100,32 +84,30 @@ const ProductsTable: React.FC<ProductsTableProps> = ({ products }) => {
             <TableCell>{product.subCategory}</TableCell>
             <TableCell>{product.price}</TableCell>
             <TableCell>{product.quantity}</TableCell>
-            <TableCell className="text-right">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="destructive">Delete</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      the product.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => handleDelete(product.id)}
-                      disabled={isPending}
-                    >
-                      {isPending && <Loader2 className="animate-spin" />}
-                      Yes, delete
-                    </Button>
-                    <Button variant="default">No, cancel</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+            <TableCell className="text-right flex gap-1 justify-end items-center">
+              <Button
+                variant="outline"
+                onClick={() =>
+                  onOpen("product-edit", {
+                    role: "admin",
+                    id: product.id,
+                    product,
+                  })
+                }
+              >
+                Edit
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() =>
+                  onOpen("product-delete", {
+                    role: "admin",
+                    id: product.id,
+                  })
+                }
+              >
+                Delete
+              </Button>
             </TableCell>
           </TableRow>
         ))}

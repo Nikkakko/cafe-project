@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { getErrorMessage } from "@/lib/handle-error";
 import { getCachedUser } from "@/lib/queries/user";
 import { z } from "zod";
+import { slugify } from "@/lib/utils";
 
 export const createProductAction = action(AddProductSchema, async values => {
   const user = await getCachedUser();
@@ -43,6 +44,7 @@ export const createProductAction = action(AddProductSchema, async values => {
         category: ParsedValues.data.category,
         subCategory: ParsedValues.data.subCategory,
         quantity: ParsedValues.data.quantity,
+        slug: slugify(ParsedValues.data.title),
       },
     });
 

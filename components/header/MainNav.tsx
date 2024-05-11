@@ -13,10 +13,12 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { usePathname } from "next/navigation";
 
 interface MainNavProps {}
 
 const MainNav: React.FC<MainNavProps> = ({}) => {
+  const pathname = usePathname();
 
   return (
     <div className="hidden lg:flex gap-6">
@@ -31,6 +33,7 @@ const MainNav: React.FC<MainNavProps> = ({}) => {
         <NavigationMenuList>
           {siteConfig.mainNav.map((item, index) => {
             const hasItems = item.items && item.items.length > 0;
+            const isActive = item.href === pathname;
             return (
               <NavigationMenuItem key={index}>
                 <NavigationMenuTrigger
@@ -38,7 +41,12 @@ const MainNav: React.FC<MainNavProps> = ({}) => {
                 >
                   {!hasItems ? (
                     <NavigationMenuLink href={item.href} asChild>
-                      <Link href={item.href}>{item.title}</Link>
+                      <Link
+                        href={item.href}
+                        className={cn(isActive ? "text-foreground" : "")}
+                      >
+                        {item.title}
+                      </Link>
                     </NavigationMenuLink>
                   ) : (
                     item.title
@@ -55,7 +63,6 @@ const MainNav: React.FC<MainNavProps> = ({}) => {
                           <Link href={subItem.href}>{subItem.title}</Link>
                         </li>
                       ))}
-                      
                     </ul>
                   </NavigationMenuContent>
                 )}

@@ -8,31 +8,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
-import {
-  Home,
-  LineChart,
-  Package,
-  Package2,
-  PanelLeft,
-  Search,
-  ShoppingCart,
-  Users2,
-} from "lucide-react";
-import Image from "next/image";
+import { capitalizeFirstLetter, cn } from "@/lib/utils";
+import { PanelLeft } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 
 interface DashboardHeaderProps {}
@@ -143,9 +125,3 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({}) => {
 };
 
 export default DashboardHeader;
-
-//function to Uppercase the first letter of a string
-function capitalizeFirstLetter(str: string) {
-  if (str === undefined) return str;
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}

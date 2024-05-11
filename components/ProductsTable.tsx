@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import EmptyState from "./EmptyState";
 
 interface ProductsTableProps {
   products: Products[];
@@ -69,7 +70,12 @@ const ProductsTable: React.FC<ProductsTableProps> = ({ products }) => {
   }
 
   if (!products.length)
-    return <div className="text-center text-gray-500">No products found</div>;
+    return (
+      <EmptyState
+        title="No products found"
+        description="No products found in the database"
+      />
+    );
 
   return (
     <Table>

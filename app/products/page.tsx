@@ -7,7 +7,11 @@ import ProductCard from "./_components/ProductCard";
 interface ProductsPageProps {}
 
 const ProductsPage: React.FC<ProductsPageProps> = async ({}) => {
-  const products = await db.products.findMany();
+  const products = await db.products.findMany({
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
 
   if (!products) {
     return (

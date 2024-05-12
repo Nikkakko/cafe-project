@@ -31,6 +31,9 @@ const ProductSlugPage: React.FC<ProductSlugPageProps> = async ({ params }) => {
         },
       ],
     },
+    orderBy: {
+      createdAt: "asc",
+    },
   });
 
   if (!products || products.length === 0) {

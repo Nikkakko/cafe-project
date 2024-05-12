@@ -1,5 +1,7 @@
-import { Category, SubCategories } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 import { z } from "zod";
+
+const { Category, SubCategories, Size, PurchaseType } = $Enums;
 
 export const AddProductSchema = z.object({
   title: z
@@ -22,7 +24,10 @@ export const AddProductSchema = z.object({
       message: "Invalid image URL",
     })
   ),
-  quantity: z.number().min(1, {
+  stock: z.number().min(1, {
     message: "Quantity should be at least 1",
   }),
+  sizes: z.array(z.nativeEnum(Size)),
+  purchaseType: z.nativeEnum(PurchaseType),
+  salePercent: z.number().min(0).max(100),
 });

@@ -36,6 +36,8 @@ import Image from "next/image";
 import { useModalStore } from "@/store/modalStore";
 import { removeImage } from "@/app/_actions/uploadthing";
 import { siteConfig } from "@/config/site";
+import { Checkbox } from "../ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 interface AddProductFormProps {
   initialData?: AddProductInput & { id: string };
@@ -52,10 +54,13 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
       title: initialData?.title || "",
       description: initialData?.description || "",
       price: initialData?.price || 0,
-      category: initialData?.category || "COFFE",
-      subCategory: initialData?.subCategory || "BEANS",
+      category: initialData?.category || undefined,
+      subCategory: initialData?.subCategory || undefined,
       images: initialData?.images || [],
-      quantity: initialData?.quantity || 1,
+      stock: initialData?.stock || 1,
+      salePercent: initialData?.salePercent || 0,
+      sizes: initialData?.sizes || [],
+      purchaseType: initialData?.purchaseType || undefined,
     },
   });
 
@@ -117,6 +122,8 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
       );
     }
   };
+
+  console.log(form.watch("sizes"));
 
   return (
     <Form {...form}>
@@ -199,7 +206,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
             )}
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name="price"
@@ -225,10 +232,10 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
           />
           <FormField
             control={form.control}
-            name="quantity"
+            name="stock"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quantity</FormLabel>
+                <FormLabel>Stock</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -243,6 +250,129 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
                       field.onChange(parsedValue);
                     }}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="salePercent"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sale Percent</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={100}
+                    className=""
+                    {...field}
+                    onChange={e => {
+                      const value = e.target.value;
+                      const parsedValue = parseInt(value, 10);
+                      if (isNaN(parsedValue)) return;
+                      field.onChange(parsedValue);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="sizes"
+            render={() => (
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">
+                    Sizes Available (Optional)
+                  </FormLabel>
+                  <FormDescription>
+                    Select the sizes available for this product
+                  </FormDescription>
+                </div>
+                <div className="grid grid-cols-2 gap-1">
+                  {siteConfig.sizeCategories.map(item => (
+                    <FormField
+                      key={item.value}
+                      control={form.control}
+                      name="sizes"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={item.value}
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                          >
+                            <FormControl className="">
+                              <Checkbox
+                                className="border-border"
+                                checked={field.value?.includes(item.value)}
+                                onCheckedChange={checked => {
+                                  return checked
+                                    ? field.onChange([
+                                        ...field.value,
+                                        item.value,
+                                      ])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          value => value !== item.value
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {item.label}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="purchaseType"
+            render={({ field }) => (
+              <FormItem className="">
+                <div className="mb-4">
+                  <FormLabel>Purchase Type</FormLabel>
+                  <FormDescription>
+                    Select the purchase type for this product
+                  </FormDescription>
+                </div>
+                <FormControl className="">
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    {siteConfig.purchaseTypes.map(item => (
+                      <FormItem
+                        key={item.value}
+                        className="flex items-center space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <RadioGroupItem
+                            value={item.value}
+                            className="border-border"
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {item.label}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>

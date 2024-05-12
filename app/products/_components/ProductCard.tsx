@@ -25,8 +25,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           quality={100}
         />
       </div>
-      <div className="mx-1 mt-4 flex items-center justify-between gap-4 ">
-        <h3 className="text-lg font-semibold text-stone-400 ">
+      <div className="mx-1 mt-4 flex items-start justify-between gap-4 ">
+        <h3 className="text-sm font-semibold text-stone-400 ">
           {product.title}
         </h3>
         <p className="text-sm font-semibold ">

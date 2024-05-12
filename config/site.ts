@@ -8,7 +8,7 @@ import {
   Users2,
 } from "lucide-react";
 import { SubImage, CoffeImage, EquipmentImage } from "@/public/images";
-import { Categories, Subcategories } from "@/types";
+import { Categories, Subcategories, Sizes, PurchaseTypes } from "@/types";
 
 const links = {
   github: "https://github.com/Nikkakko",
@@ -93,6 +93,47 @@ const productSubcategories: Subcategories[] = [
   { value: "ESPRESSO", label: "Espresso" },
 ];
 
+const sizeCategories: Sizes[] = [
+  {
+    value: "STANDARD_BOX_12OZ",
+    label: "Standard Box (12oz)",
+  },
+  {
+    value: "BULK_BAG_5LB",
+    label: "Bulk Bag (5lb)",
+  },
+
+  {
+    value: "G250",
+    label: "250g",
+  },
+  {
+    value: "KG1",
+    label: "1kg",
+  },
+
+  {
+    value: "ONE_CUP",
+    label: "1 Cup",
+  },
+  {
+    value: "TWO_CUP",
+    label: "2 Cups",
+  },
+];
+
+const purchaseTypes: PurchaseTypes[] = [
+  {
+    value: "ONE_TIME",
+    label: "One Time",
+  },
+
+  {
+    value: "SUBSCRIPTION",
+    label: "Subscription",
+  },
+];
+
 export const siteConfig = {
   name: "Coffe Shop",
   description: "The best coffee in town!",
@@ -102,6 +143,8 @@ export const siteConfig = {
   dashboardPageLinks,
   productCategories,
   productSubcategories,
+  sizeCategories,
+  purchaseTypes,
 
   mainNav: [
     {

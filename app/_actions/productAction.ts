@@ -9,6 +9,7 @@ import { getErrorMessage } from "@/lib/handle-error";
 import { getCachedUser } from "@/lib/queries/user";
 import { z } from "zod";
 import { slugify } from "@/lib/utils";
+import { Size } from "@prisma/client";
 
 export const createProductAction = action(AddProductSchema, async values => {
   const user = await getCachedUser();
@@ -20,7 +21,6 @@ export const createProductAction = action(AddProductSchema, async values => {
   }
 
   const ParsedValues = AddProductSchema.safeParse(values);
-  console.log("ParsedValues", ParsedValues);
 
   if (!ParsedValues.success) {
     return {
@@ -44,7 +44,16 @@ export const createProductAction = action(AddProductSchema, async values => {
         price: ParsedValues.data.price,
         category: ParsedValues.data.category,
         subCategory: ParsedValues.data.subCategory,
-        quantity: ParsedValues.data.quantity,
+        stock: ParsedValues.data.stock,
+        purchaseType: ParsedValues.data.purchaseType,
+        sizes: {
+          createMany: {
+            data: ParsedValues.data.sizes.map((size: Size) => ({
+              size,
+            })),
+          },
+        },
+        salePercent: ParsedValues.data.salePercent,
         slug: slugify(ParsedValues.data.title),
       },
     });
@@ -127,7 +136,16 @@ export const updateProductAction = action(updateProductSchema, async values => {
         price: parsedValues.data.product.price,
         category: parsedValues.data.product.category,
         subCategory: parsedValues.data.product.subCategory,
-        quantity: parsedValues.data.product.quantity,
+        stock: parsedValues.data.product.stock,
+        sizes: {
+          createMany: {
+            data: parsedValues.data.product.sizes.map((size: Size) => ({
+              size,
+            })),
+          },
+        },
+        purchaseType: parsedValues.data.product.purchaseType,
+        salePercent: parsedValues.data.product.salePercent,
       },
     });
 

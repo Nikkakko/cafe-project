@@ -17,7 +17,10 @@ export function slugify(text: string): string {
     .replace(/-+$/, ""); // Trim - from end of text
 }
 
-// soutput for slugify("Moccamaster KBS Black") => "moccamaster-kbs-black"
+// brew-device => BREW_DEVICE
+export const unSlugify = (text: string) => {
+  return text.replace(/-/g, "_").toUpperCase();
+};
 
 export function formatPrice(
   price: number | string,

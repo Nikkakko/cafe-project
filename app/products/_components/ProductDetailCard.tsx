@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Products } from "@prisma/client";
-import { MoveLeft } from "lucide-react";
+import { ChevronLeft, MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import ProductBreadCrumbs from "./ProductBreadCrumbs";
@@ -17,7 +17,7 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ product }) => {
   return (
     <div>
       <div className="flex items-center gap-0 group transition mb-10">
-        <MoveLeft
+        <ChevronLeft
           size={24}
           className="text-stone-400 group-hover:text-foreground group-hover:animate-pulse group-hover:cursor-pointer"
         />

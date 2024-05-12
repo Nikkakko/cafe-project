@@ -20,6 +20,7 @@ export const createProductAction = action(AddProductSchema, async values => {
   }
 
   const ParsedValues = AddProductSchema.safeParse(values);
+  console.log("ParsedValues", ParsedValues);
 
   if (!ParsedValues.success) {
     return {
@@ -34,7 +35,7 @@ export const createProductAction = action(AddProductSchema, async values => {
   }
 
   try {
-    const res = await db.products.create({
+    await db.products.create({
       data: {
         userId: user.id,
         title: ParsedValues.data.title,

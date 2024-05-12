@@ -69,8 +69,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
     })) || null
   );
 
-  const disabledButton =
-    form.formState.isSubmitting || isPending || !form.formState.isDirty;
+  const disabledButton = false;
 
   function onSubmit(values: AddProductInput) {
     startTransition(async () => {

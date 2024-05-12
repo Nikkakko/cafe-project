@@ -16,6 +16,8 @@ const shellVariants = cva("", {
   variants: {
     variant: {
       default: "container",
+      productgrid:
+        "mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8",
       container:
         "max-w-[1280px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 2xl:px-0",
       centered: "container flex h-[100dvh] max-w-2xl flex-col justify-center",

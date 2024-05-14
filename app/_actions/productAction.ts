@@ -9,7 +9,7 @@ import { getErrorMessage } from "@/lib/handle-error";
 import { getCachedUser } from "@/lib/queries/user";
 import { z } from "zod";
 import { slugify } from "@/lib/utils";
-import { Size } from "@prisma/client";
+import { Purchase, Size } from "@prisma/client";
 
 export const createProductAction = action(AddProductSchema, async values => {
   const user = await getCachedUser();
@@ -45,7 +45,15 @@ export const createProductAction = action(AddProductSchema, async values => {
         category: ParsedValues.data.category,
         subCategory: ParsedValues.data.subCategory,
         stock: ParsedValues.data.stock,
-        purchaseType: ParsedValues.data.purchaseType,
+        purchaseType: {
+          createMany: {
+            data: ParsedValues.data.purchaseType.map(
+              (purchaseType: Purchase) => ({
+                purchase: purchaseType,
+              })
+            ),
+          },
+        },
         sizes: {
           createMany: {
             data: ParsedValues.data.sizes.map((size: Size) => ({
@@ -144,7 +152,15 @@ export const updateProductAction = action(updateProductSchema, async values => {
             })),
           },
         },
-        purchaseType: parsedValues.data.product.purchaseType,
+        purchaseType: {
+          createMany: {
+            data: parsedValues.data.product.purchaseType.map(
+              (purchaseType: Purchase) => ({
+                purchase: purchaseType,
+              })
+            ),
+          },
+        },
         salePercent: parsedValues.data.product.salePercent,
       },
     });

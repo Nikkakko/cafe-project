@@ -43,7 +43,7 @@ enum SubCategories {
 
 
 
-enum PurchaseType {
+enum Purchase {
   ONE_TIME
   SUBSCRIPTION
 }
@@ -73,8 +73,9 @@ model Products {
 
 
   salePercent Int
+
   sizes ProductSize[]
-  purchaseType PurchaseType
+  purchaseType PurchaseType[]
   
   price     Float
   stock  Int
@@ -132,6 +133,16 @@ model ProductSize {
   id        String   @id @default(uuid())
   productId String
   size      Size
+  product   Products @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model PurchaseType {
+  id        String   @id @default(uuid())
+  productId String
+  purchase  Purchase
   product   Products @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

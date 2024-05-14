@@ -1,7 +1,7 @@
 import { $Enums } from "@prisma/client";
 import { z } from "zod";
 
-const { Category, SubCategories, Size, PurchaseType } = $Enums;
+const { Category, SubCategories, Size, Purchase } = $Enums;
 
 export const AddProductSchema = z.object({
   title: z
@@ -28,6 +28,6 @@ export const AddProductSchema = z.object({
     message: "Quantity should be at least 1",
   }),
   sizes: z.array(z.nativeEnum(Size)),
-  purchaseType: z.nativeEnum(PurchaseType),
+  purchaseType: z.array(z.nativeEnum(Purchase)),
   salePercent: z.number().min(0).max(100),
 });

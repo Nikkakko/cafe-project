@@ -17,6 +17,6 @@ export type Sizes = {
 };
 
 export type PurchaseTypes = {
-  value: z.infer<typeof AddProductSchema>["purchaseType"];
+  value: z.infer<typeof AddProductSchema>["purchaseType"][0];
   label: string;
 };

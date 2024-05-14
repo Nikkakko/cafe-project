@@ -60,7 +60,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
       stock: initialData?.stock || 1,
       salePercent: initialData?.salePercent || 0,
       sizes: initialData?.sizes || [],
-      purchaseType: initialData?.purchaseType || undefined,
+      purchaseType: initialData?.purchaseType || [],
     },
   });
 
@@ -122,8 +122,6 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
       );
     }
   };
-
-  console.log(form.watch("sizes"));
 
   return (
     <Form {...form}>
@@ -342,38 +340,56 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
           <FormField
             control={form.control}
             name="purchaseType"
-            render={({ field }) => (
-              <FormItem className="">
+            render={() => (
+              <FormItem>
                 <div className="mb-4">
-                  <FormLabel>Purchase Type</FormLabel>
+                  <FormLabel className="text-base">
+                    Purchase Type (Optional)
+                  </FormLabel>
                   <FormDescription>
                     Select the purchase type for this product
                   </FormDescription>
                 </div>
-                <FormControl className="">
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    {siteConfig.purchaseTypes.map(item => (
-                      <FormItem
-                        key={item.value}
-                        className="flex items-center space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <RadioGroupItem
-                            value={item.value}
-                            className="border-border"
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {item.label}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
+                <div className="grid grid-cols-2 gap-1">
+                  {siteConfig.purchaseTypes.map(item => (
+                    <FormField
+                      key={item.value}
+                      control={form.control}
+                      name="purchaseType"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={item.value}
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                          >
+                            <FormControl className="">
+                              <Checkbox
+                                className="border-border"
+                                checked={field.value?.includes(item.value)}
+                                onCheckedChange={checked => {
+                                  return checked
+                                    ? field.onChange([
+                                        ...field.value,
+                                        item.value,
+                                      ])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          value => value !== item.value
+                                        )
+                                      );
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {item.label}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
+                </div>
+
                 <FormMessage />
               </FormItem>
             )}

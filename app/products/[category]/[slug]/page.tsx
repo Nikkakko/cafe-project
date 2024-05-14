@@ -6,15 +6,26 @@ import { SubCategories, Category } from "@prisma/client";
 import EmptyState from "@/components/EmptyState";
 
 import ProductCard from "../../_components/ProductCard";
+import Sort from "@/components/Sort";
+import { Separator } from "@/components/ui/separator";
 
 interface ProductSlugPageProps {
   params: {
     slug: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const ProductSlugPage: React.FC<ProductSlugPageProps> = async ({ params }) => {
+const ProductSlugPage: React.FC<ProductSlugPageProps> = async ({
+  params,
+  searchParams,
+}) => {
   const { slug } = params;
+  const sortBy =
+    typeof searchParams.sortBy === "string" ? searchParams.sortBy : "newest";
+
+  const sortKey = sortBy?.split(".")[0] as string;
+  const sortDirection = sortBy?.split(".")[1] as "asc" | "desc";
 
   const products = await db.products.findMany({
     where: {
@@ -32,7 +43,7 @@ const ProductSlugPage: React.FC<ProductSlugPageProps> = async ({ params }) => {
       ],
     },
     orderBy: {
-      createdAt: "asc",
+      [sortKey]: sortDirection,
     },
   });
 
@@ -48,7 +59,9 @@ const ProductSlugPage: React.FC<ProductSlugPageProps> = async ({ params }) => {
   }
 
   return (
-    <Shell className="flex flex-col flex-1" variant="container" as="main">
+    <Shell className="flex flex-col flex-1 py-24" variant="container" as="main">
+      <Sort title="Products" />
+      <Separator className="mt-4" />
       <Shell variant="productgrid" as="div">
         {products.map(product => (
           <ProductCard key={product.id} product={product} />

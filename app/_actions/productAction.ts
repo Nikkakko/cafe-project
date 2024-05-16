@@ -1,6 +1,6 @@
 "use server";
 import db from "@/lib/db";
-import { AddProductSchema } from "@/validation/addproduct";
+import { AddProductSchema } from "@/validation/product";
 import { currentUser } from "@clerk/nextjs/server";
 import { action } from "@/lib/safe-action";
 import { checkRole } from "@/utils/roles";

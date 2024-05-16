@@ -76,6 +76,8 @@ model Products {
 
   sizes ProductSize[]
   purchaseType PurchaseType[]
+
+
   
   price     Float
   stock  Int
@@ -96,10 +98,11 @@ model Products {
 
 model CartItem {
   id        String   @id @default(uuid())
-  userId    String
   productId String
   quantity  Int
   product   Products @relation(fields: [productId], references: [id])
+  
+
   cart      Cart     @relation(fields: [cartId], references: [id])
   cartId    String
   createdAt DateTime @default(now())
@@ -108,8 +111,9 @@ model CartItem {
 
 model Cart {
   id        String   @id @default(uuid())
-  userId    String
-  cartItems     CartItem[]
+  userId    String?
+  cartItems CartItem[]
+  closed   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -147,3 +151,4 @@ model PurchaseType {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+

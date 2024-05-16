@@ -4,6 +4,7 @@ import EmptyState from "@/components/EmptyState";
 import { Shell } from "@/components/ui/shell";
 import Link from "next/link";
 import ProductDetailCard from "../_components/ProductDetailCard";
+import ProductOptions from "@/components/ProductForm";
 
 interface ProductCategoryPageProps {
   params: {
@@ -17,6 +18,12 @@ const ProductCategoryPage: React.FC<ProductCategoryPageProps> = async ({
   const product = await db.products.findFirst({
     where: {
       slug: params.category,
+    },
+
+    include: {
+      purchaseType: true,
+      sizes: true,
+      cartItem: true,
     },
   });
 

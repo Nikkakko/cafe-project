@@ -22,6 +22,14 @@ export const unSlugify = (text: string) => {
   return text.replace(/-/g, "_").toUpperCase();
 };
 
+// BREW_DEVICE => Brew Device
+export const unSlugifyTitle = (text: string) => {
+  return text
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+};
+
 export function formatPrice(
   price: number | string,
   options: Intl.NumberFormatOptions = {}

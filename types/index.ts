@@ -1,4 +1,4 @@
-import { AddProductSchema } from "@/validation/addproduct";
+import { AddProductSchema } from "@/validation/product";
 import * as z from "zod";
 
 export type Categories = {

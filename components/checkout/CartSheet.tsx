@@ -11,11 +11,14 @@ import { Icons } from "@/components/icons";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
+import { getCart } from "@/app/_actions/add-to-cart";
 
 interface CartSheetProps {}
 
-const CartSheet: React.FC<CartSheetProps> = ({}) => {
-  const itemCount = 0;
+const CartSheet: React.FC<CartSheetProps> = async ({}) => {
+  const cartLineItems = await getCart();
+  const itemCount = cartLineItems?.length;
+
   return (
     <Sheet>
       <SheetTrigger asChild>

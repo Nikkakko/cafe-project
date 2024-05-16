@@ -4,8 +4,7 @@ import MobileNav from "./MobileNav";
 import CartSheet from "../checkout/CartSheet";
 import { Skeleton } from "../ui/skeleton";
 import dynamic from "next/dynamic";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 
 import DashboardButton from "./DashboardButton";
 
@@ -22,6 +21,7 @@ interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = ({}) => {
   const { userId } = auth();
+
   return (
     <header className="z-50 text-stone-400">
       <div className="container flex h-16 items-center justify-between">

@@ -3,7 +3,7 @@ import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { AddProductSchema } from "@/validation/addproduct";
+import { AddProductSchema } from "@/validation/product";
 import { Button } from "@/components/ui/button";
 import {
   Form,

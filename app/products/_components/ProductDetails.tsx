@@ -14,7 +14,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
   price,
 }) => {
   return (
-    <div className="flex-1">
+    <>
       <div className="lg:max-w-xl"></div>
       <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
         <div className="mt-4">
@@ -36,7 +36,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           </p>
         </section>
       </div>
-    </div>
+    </>
   );
 };
 

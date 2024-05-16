@@ -80,12 +80,12 @@ const Sort: React.FC<SortProps> = ({ title }) => {
       {/* add sort  */}
 
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-        <DropdownMenuTrigger>
-          <div className="flex items-center gap-1">
+        <DropdownMenuTrigger className="text-stone-400 group">
+          <div className="flex items-center gap-1 group-hover:text-white">
             Sort by
             <ChevronDown
               className={cn(
-                "w-4 h-4 transition",
+                "w-4 h-4 transition group-hover:text-white",
                 isOpen && "transform rotate-180"
               )}
             />

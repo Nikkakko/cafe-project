@@ -38,7 +38,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({
           ))}
         </div>
       </div>
-      <div className="aspect-h-3 aspect-w-4 w-full relative rounded-lg overflow-hidden">
+      <div className="aspect-h-3 aspect-w-4 w-full h-full relative rounded-lg overflow-hidden">
         <Image
           src={selectedImage}
           alt="Product image"

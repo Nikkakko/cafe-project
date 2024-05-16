@@ -54,6 +54,7 @@ export const addToCartSchema = z.object({
 
 export const cartItemSchema = z.object({
   productId: z.string(),
+  quantity: z.number().min(1).default(1),
 });
 export const deleteCartItemSchema = z.object({
   productId: z.string(),
@@ -66,3 +67,36 @@ export const deleteCartItemsSchema = z.object({
 export const updateCartItemSchema = z.object({
   quantity: z.number().min(0).default(1),
 });
+
+/* 
+quantity: number;
+    id: string;
+    userId: string;
+    title: string;
+    description: string;
+    images: string[];
+    slug: string;
+    salePercent: number;
+    price: number;
+    stock: number;
+    category: $Enums.Category;
+    subCategory: $Enums.SubCategories;
+    createdAt: Date;
+    updatedAt: Date;
+*/
+export const cartLineItemSchema = z.object({
+  quantity: z.number(),
+  id: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  images: z.array(z.string()),
+  slug: z.string(),
+  salePercent: z.number(),
+  price: z.number(),
+  stock: z.number(),
+  category: z.nativeEnum(Category),
+  subCategory: z.nativeEnum(SubCategories),
+});
+
+export type CartLineItemSchema = z.infer<typeof cartLineItemSchema>;

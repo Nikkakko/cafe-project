@@ -79,7 +79,7 @@ model Products {
 
 
   
-  price     Float
+  price   Float
   stock  Int
 
   category  Category @default(COFFE)
@@ -101,8 +101,6 @@ model CartItem {
   productId String
   quantity  Int
   product   Products @relation(fields: [productId], references: [id])
-  
-
   cart      Cart     @relation(fields: [cartId], references: [id])
   cartId    String
   createdAt DateTime @default(now())
@@ -125,8 +123,6 @@ model Review {
   rating    Int
   comment   String
   product   Products @relation(fields: [productId], references: [id])
-  
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

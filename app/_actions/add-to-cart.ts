@@ -5,19 +5,14 @@ import {
   cartItemSchema,
   deleteCartItemSchema,
   deleteCartItemsSchema,
+  CartLineItemSchema,
 } from "@/validation/product";
 import { cookies } from "next/headers";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { getErrorMessage } from "@/lib/handle-error";
-import { currentUser } from "@clerk/nextjs/server";
-import { Cart } from "@prisma/client";
-import { z } from "zod";
 
 export const addToCart = action(cartItemSchema, async values => {
   noStore();
-  const session = await currentUser();
-
-  let newCart: Cart;
 
   try {
     const parsedValues = cartItemSchema.parse(values);
@@ -121,10 +116,6 @@ export const addToCart = action(cartItemSchema, async values => {
       };
     }
 
-    // const cartItem = cart.items?.find(
-    //   item => item.productId === input.productId
-    // );
-
     const cartItem = cart.cartItems?.find(
       item => item.productId === parsedValues.productId
     );
@@ -132,8 +123,11 @@ export const addToCart = action(cartItemSchema, async values => {
     if (cartItem) {
       await db.cartItem.update({
         where: {
+          productId: parsedValues.productId,
+          cartId: cart.id,
           id: cartItem.id,
         },
+
         data: {
           quantity: cartItem.quantity + 1,
         },
@@ -154,6 +148,8 @@ export const addToCart = action(cartItemSchema, async values => {
           quantity: 1,
         },
       });
+
+      revalidatePath("/");
     }
 
     await db.cart.update({
@@ -162,13 +158,18 @@ export const addToCart = action(cartItemSchema, async values => {
       },
       data: {
         cartItems: {
-          create: {
-            product: {
-              connect: {
-                id: product.id,
-              },
+          update: {
+            where: {
+              id: cartItem?.id,
             },
-            quantity: 1,
+            data: {
+              product: {
+                connect: {
+                  id: product.id,
+                },
+              },
+              quantity: cartItem ? cartItem.quantity + 1 : 1,
+            },
           },
         },
       },
@@ -189,7 +190,7 @@ export const addToCart = action(cartItemSchema, async values => {
   }
 });
 
-export const getCart = async () => {
+export const getCart = async (): Promise<CartLineItemSchema[]> => {
   noStore();
 
   const cartId = cookies().get("cartId")?.value;
@@ -212,15 +213,6 @@ export const getCart = async () => {
 
     const uniqueProductIds = [...new Set(productIds)];
 
-    /* 
-    .where(
-        and(
-          inArray(products.id, uniqueProductIds),
-          input?.storeId ? eq(products.storeId, input.storeId) : undefined
-        )
-      )
-    */
-
     const cartLineItems = await db.products.findMany({
       where: {
         id: {
@@ -233,10 +225,23 @@ export const getCart = async () => {
       },
     });
 
-    return cartLineItems;
+    const cartItems = cartLineItems.map(product => {
+      // const quantity = productIds.filter(id => id === product.id).length;
+
+      const quantity = cart?.cartItems?.find(
+        item => item.productId === product.id
+      )?.quantity;
+
+      return {
+        ...product,
+        quantity: quantity ?? 0,
+      };
+    });
+
+    return cartItems;
   } catch (error) {
     console.error("Error getting cart:", error);
-    return getErrorMessage(error);
+    return [];
   }
 };
 
@@ -271,11 +276,6 @@ export async function deleteCart() {
   }
 }
 
-//   export async function deleteCartItem(
-//     input: z.infer<typeof deleteCartItemSchema>
-//   ) {}
-// }
-
 export const deleteCartItems = action(deleteCartItemsSchema, async values => {
   noStore();
 
@@ -301,10 +301,10 @@ export const deleteCartItems = action(deleteCartItemsSchema, async values => {
 
     const productIds = parsedValues.productIds;
 
-    cart.cartItems =
-      cart.cartItems?.filter(
-        item => !parsedValues.productIds.includes(item.productId)
-      ) ?? [];
+    // cart.cartItems =
+    //   cart.cartItems?.filter(
+    //     item => !parsedValues.productIds.includes(item.productId)
+    //   ) ?? [];
 
     await db.cart.update({
       where: {
@@ -313,7 +313,11 @@ export const deleteCartItems = action(deleteCartItemsSchema, async values => {
 
       data: {
         cartItems: {
-          set: cart.cartItems,
+          deleteMany: {
+            productId: {
+              in: productIds,
+            },
+          },
         },
       },
     });
@@ -356,10 +360,10 @@ export const deleteCartItem = action(deleteCartItemSchema, async values => {
 
     if (!cart) return;
 
-    cart.cartItems =
+    const updatedCartItems = (cart.cartItems =
       cart.cartItems?.filter(
         item => item.productId !== parsedValues.productId
-      ) ?? [];
+      ) ?? []);
 
     await db.cart.update({
       where: {
@@ -368,7 +372,9 @@ export const deleteCartItem = action(deleteCartItemSchema, async values => {
 
       data: {
         cartItems: {
-          set: cart.cartItems,
+          deleteMany: {
+            productId: parsedValues.productId,
+          },
         },
       },
     });
@@ -381,6 +387,61 @@ export const deleteCartItem = action(deleteCartItemSchema, async values => {
     };
   } catch (error) {
     console.error("Error deleting cart item:", error);
+    return {
+      data: null,
+      error: getErrorMessage(error),
+    };
+  }
+});
+
+export const updateCartItem = action(cartItemSchema, async values => {
+  noStore();
+
+  try {
+    const cartId = cookies().get("cartId")?.value;
+
+    if (!cartId) {
+      throw new Error("cartId not found, please try again.");
+    }
+
+    const parsedValues = cartItemSchema.parse(values);
+
+    const cart = await db.cart.findFirst({
+      where: {
+        id: cartId,
+      },
+      include: {
+        cartItems: true,
+      },
+    });
+
+    if (!cart) return;
+
+    const cartItem = cart.cartItems?.find(
+      item => item.productId === parsedValues.productId
+    );
+
+    if (!cartItem) return;
+
+    await db.cartItem.update({
+      where: {
+        id: cartItem.id,
+      },
+      data: {
+        quantity: parsedValues.quantity,
+      },
+    });
+
+    //update cartItems in product
+
+    revalidatePath("/");
+
+    return {
+      data: cart.cartItems,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Error updating cart item:", error);
     return {
       data: null,
       error: getErrorMessage(error),

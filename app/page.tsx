@@ -42,7 +42,7 @@ const BrowseAllCategories = () => (
     href="/products"
     className="text-sm font-semibold text-sky-600 hover:text-sky-500"
   >
-    Browse all categories<span aria-hidden="true"> →</span>
+    Browse all products<span aria-hidden="true"> →</span>
   </Link>
 );
 

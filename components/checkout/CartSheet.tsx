@@ -15,11 +15,13 @@ import { getCart } from "@/app/_actions/add-to-cart";
 import Link from "next/link";
 import { cn, formatPrice } from "@/lib/utils";
 import CartLineItems from "./CartLineItems";
+import { getCachedUser } from "@/lib/queries/user";
 
 interface CartSheetProps {}
 
 const CartSheet: React.FC<CartSheetProps> = async ({}) => {
   const cartLineItems = await getCart();
+  const currentUser = await getCachedUser();
   const itemCount = cartLineItems?.length;
 
   const cartTotal = cartLineItems.reduce(
@@ -78,7 +80,8 @@ const CartSheet: React.FC<CartSheetProps> = async ({}) => {
                     href="/cart"
                     className={buttonVariants({
                       size: "sm",
-                      className: "w-full",
+                      className:
+                        "w-full  bg-sky-500 text-white hover:bg-sky-600",
                     })}
                   >
                     Continue to checkout
@@ -104,7 +107,7 @@ const CartSheet: React.FC<CartSheetProps> = async ({}) => {
                   buttonVariants({
                     variant: "link",
                     size: "sm",
-                    className: "text-sm text-muted-foreground",
+                    className: "text-sm text-muted-foreground ",
                   })
                 )}
               >

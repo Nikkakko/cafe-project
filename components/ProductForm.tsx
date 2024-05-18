@@ -161,7 +161,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
         <Button
           type="submit"
-          className="w-full bg-sky-500 text-white hover:bg-sky-600 "
+          className="w-full bg-sky-500 text-white hover:bg-sky-600"
           disabled={isPending}
         >
           Add to Cart

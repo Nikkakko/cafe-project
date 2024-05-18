@@ -50,8 +50,10 @@ export const addToCart = action(cartItemSchema, async values => {
         },
       });
 
-      console.log("newCart", newCart);
-      cookieStore.set("cartId", newCart.id);
+      cookieStore.set("cartId", newCart.id, {
+        // expires in 7 days
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
     }
 
     const cart = await db.cart.findUnique({
@@ -107,7 +109,9 @@ export const addToCart = action(cartItemSchema, async values => {
         },
       });
 
-      cookieStore.set("cartId", newCart.id);
+      cookieStore.set("cartId", newCart.id, {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
 
       revalidatePath("/");
       return {
@@ -120,19 +124,7 @@ export const addToCart = action(cartItemSchema, async values => {
       item => item.productId === parsedValues.productId
     );
 
-    if (cartItem) {
-      await db.cartItem.update({
-        where: {
-          productId: parsedValues.productId,
-          cartId: cart.id,
-          id: cartItem.id,
-        },
-
-        data: {
-          quantity: cartItem.quantity + 1,
-        },
-      });
-    } else {
+    if (!cartItem) {
       await db.cartItem.create({
         data: {
           cart: {
@@ -146,6 +138,20 @@ export const addToCart = action(cartItemSchema, async values => {
             },
           },
           quantity: 1,
+        },
+      });
+
+      revalidatePath("/");
+    } else {
+      await db.cartItem.update({
+        where: {
+          productId: parsedValues.productId,
+          cartId: cart.id,
+          id: cartItem.id,
+        },
+
+        data: {
+          quantity: cartItem.quantity + 1,
         },
       });
 
